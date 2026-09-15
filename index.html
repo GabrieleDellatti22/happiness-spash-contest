@@ -25,15 +25,15 @@ label{display:block;font-weight:700;font-size:14px;margin:14px 0 7px}.input{widt
 <header class="top"><div class="brand"><div class="mark">H</div><div><h1>HAPPINESS × SPASH</h1><small>Highlight Contest</small></div></div><button id="logout" class="btn hidden">Esci</button></header>
 <main id="app"><div class="spinner"></div></main>
 </div>
-<script type="module">
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.4';
-const supabase=createClient('https://pkaadvqyrdxgymzzugvo.supabase.co','sb_publishable_Yru2Ftclbaq6n-7laSrP_A_su230R5h');
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js" onerror="document.getElementById('app').innerHTML='<div class=&quot;notice error&quot;>Impossibile caricare l’app. Aggiorna la pagina oppure prova senza blocco pubblicità.</div>'"></script>
+<script>
+const supabase=window.supabase.createClient('https://pkaadvqyrdxgymzzugvo.supabase.co','sb_publishable_Yru2Ftclbaq6n-7laSrP_A_su230R5h');
 const app=document.querySelector('#app'), logout=document.querySelector('#logout');
 let session=null,isAdmin=false,settings=null,currentTab='home';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const msg=(text,type='notice')=>'<div class="notice '+type+'">'+esc(text)+'</div>';
 const fmt=n=>new Intl.DateTimeFormat('it-IT',{dateStyle:'medium',timeStyle:'short'}).format(new Date(n));
-async function boot(){const {data}=await supabase.auth.getSession();session=data.session;if(!session)return authView();await loadContext();render();}
+async function boot(){try{const {data,error}=await supabase.auth.getSession();if(error)throw error;session=data.session;if(!session)return authView();await loadContext();render()}catch(error){app.innerHTML=msg('Errore di collegamento. Aggiorna la pagina e riprova.','error');console.error(error)}}
 supabase.auth.onAuthStateChange(async(_,s)=>{session=s;if(s){await loadContext();render()}else authView()});
 logout.onclick=async()=>supabase.auth.signOut();
 function authView(){logout.classList.add('hidden');app.innerHTML=`
