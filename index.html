@@ -45,7 +45,7 @@ let register=false;document.querySelector('#toggleAuth').onclick=()=>{register=!
 document.querySelector('#loginForm').onsubmit=async e=>{e.preventDefault();const box=document.querySelector('#authMsg'),btn=document.querySelector('#authSubmit');btn.disabled=true;box.innerHTML='';const email=document.querySelector('#email').value.trim(),password=document.querySelector('#password').value;let error;
 if(register){const full_name=document.querySelector('#fullName').value.trim();if(full_name.length<2){box.innerHTML=msg('Inserisci nome e cognome.','error');btn.disabled=false;return}({error}=await supabase.auth.signUp({email,password,options:{data:{full_name,instagram_handle:document.querySelector('#instagram').value.trim()}}}));if(!error)box.innerHTML=msg('Registrazione completata. Controlla la tua email per confermare l’account.','success')}
 else({error}=await supabase.auth.signInWithPassword({email,password}));
-if(error)box.innerHTML=msg(error.message,'error');btn.disabled=false}};
+if(error)box.innerHTML=msg(error.message,'error');btn.disabled=false};
 }
 async function loadContext(){logout.classList.remove('hidden');const [{data:a},{data:s}]=await Promise.all([supabase.from('admin_users').select('user_id').maybeSingle(),supabase.from('contest_settings').select('*').single()]);isAdmin=!!a;settings=s}
 function nav(){return '<nav class="nav">'+[['home','Contest'],['upload','Carica video'],['vote','Vota'],...(isAdmin?[['admin','Amministra']]:[])].map(([id,l])=>'<button class="btn '+(currentTab===id?'active':'')+'" data-tab="'+id+'">'+l+'</button>').join('')+'</nav>'}
